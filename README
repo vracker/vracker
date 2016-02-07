@@ -61,7 +61,7 @@ Requirements
 - POSIX shell, e.g. [bash] [1].
 - [jq] [2]             -- JSON processor.
 - [html-xml-utils] [3] -- utilities for manipulating HTML and XML files.
-- xmlstarlet [4]       -- utilities for working with XML files.
+- [xmlstarlet] [4]     -- utilities for working with XML files.
 
   [1]: https://www.gnu.org/software/bash/
   [2]: https://stedolan.github.io/jq/
