@@ -1,0 +1,41 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## Linux kernel
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=linux-kernel
+URL="https://www.kernel.org/releases.json"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+JQ_FILTER='
+[
+ .releases[]
+ | select(.version | startswith("next-") | not)
+ |
+ {
+  (.version):
+  {
+   date:      .released.isodate,
+   src:       .source,
+   src_sign:  .pgp,
+   changelog: .gitweb,
+   stable:
+   (
+    if .version | contains("-rc") then
+     false
+    else
+     true
+    end
+   )
+  }
+ }
+] | add
+'
+
+echo "$CONTENT" | jq -M "$JQ_FILTER"

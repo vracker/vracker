@@ -1,0 +1,52 @@
+#!/bin/sh
+
+## vracker's tools
+## download
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+VRACKER_CACHEDIR="${VRACKER_CACHEDIR:-$XDG_CACHE_HOME/vracker}"
+VRACKER_CACHESECS=${VRACKER_CACHESECS:-600}
+VRACKER_USERAGENT="${VRACKER_USERAGENT:-vracker/1.0}"
+
+[ -d "$VRACKER_CACHEDIR" ] || mkdir -p "$VRACKER_CACHEDIR"
+
+if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
+	echo "Usage: $0 URL..."
+	echo
+	echo "Print the content served at URL."
+	echo \
+"If it's already in cache and not older than VRACKER_CACHESECS seconds, \
+then cached content is shown.  Otherwise it's downloaded into cache first."
+	echo
+	echo "Current settings:"
+	echo "VRACKER_CACHEDIR  = $VRACKER_CACHEDIR"
+	echo "VRACKER_CACHESECS = $VRACKER_CACHESECS"
+	echo "VRACKER_USERAGENT = $VRACKER_USERAGENT"
+	exit 0
+fi
+
+[ "$1" = "--" ] && shift
+
+while [ $# -gt 0 ]; do
+	URL="$1"
+	shift
+	FILE="$(printf "%s" "$URL" | md5sum | sed 's, .*,,')"
+	MTIME=$(stat -c %Y "$VRACKER_CACHEDIR/$FILE" 2>/dev/null)
+	if [ -z "$VRACKER_OFFLINE" ]; then
+		[ -z "$MTIME" ] && MTIME=0
+		BC_IS_FILE_FRESH_ENOUGH="$(date +%s)<$MTIME+$VRACKER_CACHESECS"
+		if [ $(echo "$BC_IS_FILE_FRESH_ENOUGH" | bc) -eq 0 ]; then
+			curl -L \
+				-A "$VRACKER_USERAGENT" \
+				-o "$VRACKER_CACHEDIR/$FILE" \
+				$CURL_OPTIONS \
+				"$URL"
+		fi
+	fi
+	cat "$VRACKER_CACHEDIR/$FILE"
+done

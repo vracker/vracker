@@ -1,0 +1,40 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## git
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=git
+URL="https://www.kernel.org/pub/software/scm/git/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+FILE_PLUS_DATE="$(\
+	echo "$CONTENT" \
+		| sed \
+		  -e  '/^<a href="git-[0-9]/!d' \
+		  -e  '/tar\.sign/d' \
+		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *.*,,' \
+		| sort -V | sed '$!d'
+)"
+
+FILE="${FILE_PLUS_DATE%%:*}"
+SIGN="${FILE%%.tar*}.tar.sign"
+DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+VER="${FILE#git-}"
+VER="${VER%%.tar*}"
+
+CGITURL="https://git.kernel.org/cgit/git/git.git/"
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"src_sign\": \"$URL$SIGN\","
+echo "    \"relnotes\": \"${CGITURL}plain/Documentation/RelNotes/$VER.txt\","
+echo "    \"changelog\": \"${CGITURL}log/?h=v$VER\""
+echo "  }"
+echo "}"

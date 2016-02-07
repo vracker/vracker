@@ -1,0 +1,69 @@
+vracker  --  version tracker
+============================
+
+vracker is basically a set of scripts obtaining and presenting version
+information in uniform way.
+
+
+JSON output format
+------------------
+
+JSON returned from source script in vracker is a dictionary of
+maintained versions, where key is the version number (without v prefix),
+and value is an object with following properties:
+- date:       YYYY-MM-DD date of the official release     -- mandatory
+- src:        URL of the source (it's usually a tarball)  -- optional
+- src_sign:   URL of the source PGP signature             -- optional
+- bins:       list of URLs of the binaries                -- optional
+- bins_sign:  list of URLs of the binaries PGP signatures -- optional
+- relnotes:   URL of the release notes                    -- optional
+- changelog:  URL of the log of the changes               -- optional
+- stable:     state of the release                        -- optional
+
+Release notes are meant for human consumption, while change log lists
+all the changes, these visible to the users and those under the hood.
+Nowadays projects rarely keep change log, because output of git/hg/...
+log (or their web-driven equivalents) is available for free.
+On the other hand not every project keeps release notes or NEWS file.
+
+
+### Examples
+
+Excerpt for Linux kernel:
+
+    {
+      "4.3.5": {
+        "src": "https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.3.5.tar.xz",
+        "src_sign": "https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.3.5.tar.sign",
+        "changelog": "https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/log/?id=refs/tags/v4.3.5",
+        "stable": true,
+        "date": "2016-01-31"
+      },
+      ...
+    }
+
+Excerpt for git:
+
+    {
+      "2.7.1": {
+        "date": "2016-02-06",
+        "src": "https://www.kernel.org/pub/software/scm/git/git-2.7.1.tar.xz",
+        "src_sign": "https://www.kernel.org/pub/software/scm/git/git-2.7.1.tar.sign",
+        "relnotes": "https://git.kernel.org/cgit/git/git.git/plain/Documentation/RelNotes/2.7.1.txt",
+        "changelog": "https://git.kernel.org/cgit/git/git.git/log/?h=v2.7.1"
+      }
+    }
+
+
+Requirements
+------------
+
+- POSIX shell, e.g. [bash] [1].
+- [jq] [2]             -- JSON processor.
+- [html-xml-utils] [3] -- utilities for manipulating HTML and XML files.
+- xmlstarlet [4]       -- utilities for working with XML files.
+
+  [1]: https://www.gnu.org/software/bash/
+  [2]: https://stedolan.github.io/jq/
+  [3]: http://www.w3.org/Tools/HTML-XML-utils/
+  [4]: http://xmlstar.sourceforge.net/

@@ -1,0 +1,54 @@
+#!/bin/sh
+
+## vracker's tools
+## update-script
+## (for internal use)
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+# CWD must be collections dir.
+# argument must be relative path to script within collections dir.
+
+if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
+	echo "Usage: $0 SCRIPT_PATH"
+	echo
+	echo "Generate JSON in archive by executing script and commit any changes."
+	echo "Any prior uncommitted changes in archive will be discarded."
+	echo
+	echo "WARNING:"
+	echo "$0 must be run from collections directory."
+	echo "VRACKER_DATADIR environment variable must be set."
+	exit 0
+fi
+
+if [ -z "$VRACKER_DATADIR" ]; then
+	echo "VRACKER_DATADIR environment variable not set!" >&2
+	exit 1
+fi
+
+[ "$1" = "--" ] && shift
+
+SCRIPT="$1"
+shift
+
+ORIGIN="${SCRIPT##*/}"
+PROJECT="${SCRIPT%/*}"
+PROJNAME="${PROJECT##*/}"
+JSONPATH="$ORIGIN/$PROJECT.json"
+
+if [ -n "$VRACKER_DOWNLOAD_ONLY" ]; then
+	"$SCRIPT"
+	exit 0
+fi
+
+( cd "$VRACKER_DATADIR" && git reset -q --hard )
+mkdir -p "$VRACKER_DATADIR/${JSONPATH%/*}"
+"$SCRIPT" >"$VRACKER_DATADIR/$JSONPATH"
+
+cd "$VRACKER_DATADIR"
+VERSIONS="$(jq -M -r 'keys_unsorted|.[]' "$JSONPATH" | sort -rV | tr '\n' ' ')"
+git add -- "$JSONPATH"
+git commit -m "[$ORIGIN] $PROJNAME: $VERSIONS"
