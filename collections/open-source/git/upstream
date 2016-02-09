@@ -19,7 +19,7 @@ FILE_PLUS_DATE="$(\
 		  -e  '/^<a href="'"$NAME"'-[0-9]/!d' \
 		  -e  '/tar\.sign/d' \
 		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *.*,,' \
-		| sort -V | sed '$!d'
+		| sort -rV | sed 1q
 )"
 
 FILE="${FILE_PLUS_DATE%%:*}"
