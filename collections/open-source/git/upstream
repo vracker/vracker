@@ -9,14 +9,14 @@
 ## https://opensource.org/licenses/MIT
 
 NAME=git
-URL="https://www.kernel.org/pub/software/scm/git/"
+URL="https://www.kernel.org/pub/software/scm/$NAME/"
 CONTENT="$(vracker-download "$URL")"
 [ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
 
 FILE_PLUS_DATE="$(\
 	echo "$CONTENT" \
 		| sed \
-		  -e  '/^<a href="git-[0-9]/!d' \
+		  -e  '/^<a href="'"$NAME"'-[0-9]/!d' \
 		  -e  '/tar\.sign/d' \
 		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *.*,,' \
 		| sort -V | sed '$!d'
@@ -25,10 +25,10 @@ FILE_PLUS_DATE="$(\
 FILE="${FILE_PLUS_DATE%%:*}"
 SIGN="${FILE%%.tar*}.tar.sign"
 DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
-VER="${FILE#git-}"
+VER="${FILE#$NAME-}"
 VER="${VER%%.tar*}"
 
-CGITURL="https://git.kernel.org/cgit/git/git.git/"
+CGITURL="https://git.kernel.org/cgit/$NAME/$NAME.git/"
 echo "{"
 echo "  \"$VER\": {"
 echo "    \"date\": \"$DATE\","
