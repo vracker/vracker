@@ -56,6 +56,7 @@ while [ $# -gt 0 ]; do
 	(
 		cd "$COLLS_PATH"
 		echo "Updating cache..."
+		( cd "$VRACKER_CACHEDIR" && git clean -q -fdx )
 		export VRACKER_DOWNLOAD_ONLY=1
 		find * -type f -executable -print -exec vracker-update-script {} \;
 		unset VRACKER_DOWNLOAD_ONLY
