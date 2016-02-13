@@ -1,0 +1,49 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## GCC
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=gcc
+URL="http://ftp.gnu.org/gnu/$NAME/"
+CONTENT="$(vracker-download "$URL")"
+VER="$(\
+	echo "$CONTENT" \
+		| sed '/.*<a href="'"$NAME"'-/!d;s,,,;/\/">.*/!d;s,,,;' \
+		| sort -rV | sed 1q
+)"
+URL="$URL$NAME-$VER/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+FILE_PLUS_DATE="$(\
+	echo "$CONTENT" \
+		| sed \
+		  -e  '/.*<a href="/!d;s,,,' \
+		  -e  '/^'"$NAME"'-'"$VER"'/!d' \
+		  -e  '/\.sig/d' \
+		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
+		  -e  's, *</td>.*,,' \
+		| sort -rV | sed 1q
+)"
+
+FILE="${FILE_PLUS_DATE%%:*}"
+SIGN="$FILE.sig"
+DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+VER="${FILE#$NAME-}"
+VER="${VER%%.tar*}"
+MVER="${VER%%.*}"
+AVER="${VER%.0}"
+
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"src_sign\": \"$URL$SIGN\","
+echo "    \"relnotes\": \"https://gcc.gnu.org/gcc-$MVER/changes.html#$AVER\""
+echo "  }"
+echo "}"
