@@ -17,8 +17,8 @@ FILE_PLUS_DATE="$(\
 	echo "$CONTENT" \
 		| sed \
 		  -e  '/^<a href="'"$NAME"'-[0-9]/!d' \
-		  -e  '/tar\.sign/d' \
-		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *.*,,' \
+		  -e  '/\.sign/d' \
+		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *[^ ]* *$,,' \
 		| sort -rV | sed 1q
 )"
 

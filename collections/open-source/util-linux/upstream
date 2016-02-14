@@ -25,8 +25,8 @@ FILES_PLUS_DATES="$(\
 		| sed \
 		  -e  '/^<a href="'"$NAME"'-'"$MVER"'/!d' \
 		  -e  '/-rc/d' \
-		  -e  '/tar\.sign/d' \
-		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *.*,,' \
+		  -e  '/\.sign/d' \
+		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *[^ ]* *$,,' \
 )"
 
 FILE_PLUS_DATE="$(\
