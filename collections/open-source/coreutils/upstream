@@ -19,7 +19,7 @@ FILE_PLUS_DATE="$(\
 		  -e  '/<a href="'"$NAME"'-[0-9]/!d' \
 		  -e  '/\.sig/d' \
 		  -e  's,^.*<td><a href=",,' \
-		  -e  's,">[^<]*</a></td><td [^>]*>,: ,' \
+		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
 		  -e  's, *</td>.*,,' \
 		| sort -rV | sed 1q
 )"
