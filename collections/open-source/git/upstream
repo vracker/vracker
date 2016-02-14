@@ -13,13 +13,21 @@ URL="https://www.kernel.org/pub/software/scm/$NAME/"
 CONTENT="$(vracker-download "$URL")"
 [ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
 
-FILE_PLUS_DATE="$(\
+FILES_PLUS_DATES="$(\
 	echo "$CONTENT" \
 		| sed \
 		  -e  '/^<a href="'"$NAME"'-[0-9]/!d' \
 		  -e  '/\.sign/d' \
 		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *[^ ]* *$,,' \
-		| sort -rV | sed 1q
+)"
+
+FILE_PLUS_DATE="$(\
+	echo "$FILES_PLUS_DATES" \
+		| grep \
+			"^$(echo "$FILES_PLUS_DATES" \
+				| sed 's,\.tar.*,,' | sort -ruV | sed 1q \
+			).tar" \
+		| sort -r | sed 1q
 )"
 
 FILE="${FILE_PLUS_DATE%%:*}"
