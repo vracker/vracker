@@ -29,7 +29,6 @@ SIGN="$FILE.sig"
 DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
 VER="${FILE#$NAME-}"
 VER="${VER%%.tar*}"
-TAG="$NAME-$(echo "$VER" | sed 's,\.,_,g')"
 
 CGITURL="http://git.savannah.gnu.org/cgit/$NAME.git/"
 echo "{"
