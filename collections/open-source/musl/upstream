@@ -1,0 +1,42 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## musl libc
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=musl
+URL="http://www.musl-libc.org/download.html"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+VERSIONS="$(\
+	echo "$CONTENT" \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -c p -s '\n' \
+		| grep '^<a href' \
+)"
+
+BASEURL="http://www.musl-libc.org/"
+CGITURL="http://git.musl-libc.org/cgit/musl/"
+echo "{"
+echo "$VERSIONS" | while read -r LINE; do
+	FILE="$(echo "$LINE" | sed 's,^[^"]*",,;s,".*,,')"
+	SIGN="$(echo "$LINE" | sed 's,^[^"]*"[^"]*"[^"]*",,;s,".*,,')"
+	DATE="$(date -d "${LINE##* - }" +%F)"
+	VER="${FILE##*$NAME-}"
+	VER="${VER%%.tar*}"
+	echo "  \"$VER\": {"
+	echo "    \"date\": \"$DATE\","
+	echo "    \"src\": \"$BASEURL$FILE\","
+	echo "    \"src_sign\": \"$BASEURL$SIGN\","
+	echo "    \"relnotes\": \"${CGITURL}plain/WHATSNEW?h=v$VER\","
+	echo "    \"changelog\": \"${CGITURL}log/?h=v$VER\""
+	echo "  }"
+	# FIXME: add comma if it is non-last entry
+	break
+done
+echo "}"
