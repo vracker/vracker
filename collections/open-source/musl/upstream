@@ -29,12 +29,13 @@ echo "$VERSIONS" | while read -r LINE; do
 	DATE="$(date -d "${LINE##* - }" +%F)"
 	VER="${FILE##*$NAME-}"
 	VER="${VER%%.tar*}"
+	TAG="v$VER"
 	echo "  \"$VER\": {"
 	echo "    \"date\": \"$DATE\","
 	echo "    \"src\": \"$BASEURL$FILE\","
 	echo "    \"src_sign\": \"$BASEURL$SIGN\","
-	echo "    \"relnotes\": \"${CGITURL}plain/WHATSNEW?h=v$VER\","
-	echo "    \"changelog\": \"${CGITURL}log/?h=v$VER\""
+	echo "    \"relnotes\": \"${CGITURL}plain/WHATSNEW?h=$TAG\","
+	echo "    \"changelog\": \"${CGITURL}log/?h=$TAG\""
 	echo "  }"
 	# FIXME: add comma if it is non-last entry
 	break
