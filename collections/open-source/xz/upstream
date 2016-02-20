@@ -1,0 +1,37 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## XZ Utils
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=xz
+URL="http://tukaani.org/$NAME/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+VER_PLUS_DATE="$(\
+	echo "$CONTENT" \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -c 'h3+p' -s '\n' \
+		| sed 's,^ *,,;s, [^0-9]* ,: ,;s,[^0-9]*$,,;q' \
+)"
+VER="${VER_PLUS_DATE%%:*}"
+DATE="$(date -d "${VER_PLUS_DATE#*: }" +%F)"
+FILE="$NAME-$VER.tar.gz"
+SIGN="$FILE.sig"
+TAG="v$VER"
+
+GITWEBURL="http://git.tukaani.org/?p=xz.git"
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"src_sign\": \"$URL$SIGN\","
+echo "    \"relnotes\": \"$GITWEBURL;a=blob_plain;f=NEWS;hb=refs/tags/$TAG\","
+echo "    \"changelog\": \"$GITWEBURL;a=shortlog;h=refs/tags/$TAG\""
+echo "  }"
+echo "}"
