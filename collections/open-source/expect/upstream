@@ -1,0 +1,46 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## Expect
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=expect
+NAME_U="$(echo "$NAME" | sed 's,.,\u&,')"
+URL="https://sourceforge.net/projects/$NAME/files/$NAME_U/"
+CONTENT="$(vracker-download "$URL")"
+URLPATH="$(echo "$URL" | sed 's,^[^:]*://[^/]*,,')"
+VER="$(\
+	echo "$CONTENT" \
+		| sed '/<script[^>]*>/,/<\/script>/d' \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -c 'a[class="name"][href^="'"$URLPATH"'"]' -s '\n' \
+		| sed 's,^ *,,' \
+		| sort -rV | sed 1q \
+)"
+URL="$URL$VER/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+FILE_PLUS_DATE="$(\
+	echo "$CONTENT" \
+		| sed '/<script[^>]*>/,/<\/script>/d' \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect 'tr[title^="'$NAME'"]' -s '\n' \
+		| sed '/headers="files_\(name\|date\)_h"/!d;s,<[^>]*> *<[^>]*> *,,;s,<.*,,' \
+		| sed 'N;s,\n,: ,' \
+		| sort -r | sed 1q \
+)"
+
+FILE="${FILE_PLUS_DATE%%:*}"
+DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+
+echo "{"
+	echo "  \"$VER\": {"
+	echo "    \"date\": \"$DATE\","
+	echo "    \"src\": \"$URL$FILE\""
+	echo "  }"
+echo "}"
