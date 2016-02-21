@@ -21,7 +21,7 @@ VERSIONS="$(\
 )"
 
 BASEURL="http://www.musl-libc.org/"
-CGITURL="http://git.musl-libc.org/cgit/musl/"
+CGITURL="http://git.musl-libc.org/cgit/$NAME/"
 echo "{"
 echo "$VERSIONS" | while read -r LINE; do
 	FILE="$(echo "$LINE" | sed 's,^[^"]*",,;s,".*,,')"

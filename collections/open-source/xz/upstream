@@ -25,7 +25,7 @@ FILE="$NAME-$VER.tar.gz"
 SIGN="$FILE.sig"
 TAG="v$VER"
 
-GITWEBURL="http://git.tukaani.org/?p=xz.git"
+GITWEBURL="http://git.tukaani.org/?p=$NAME.git"
 echo "{"
 echo "  \"$VER\": {"
 echo "    \"date\": \"$DATE\","
