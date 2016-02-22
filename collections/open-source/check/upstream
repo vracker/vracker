@@ -1,0 +1,38 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## Check
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=check
+URL="https://api.github.com/repos/libcheck/$NAME/releases"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+VER="$(\
+	printf "%s" "$CONTENT" \
+		| jq -rM '.[].tag_name | sub("^v";"")' \
+		| sort -rV | sed 1q \
+)"
+
+JQ_FILTER='
+.[]
+| select(.tag_name | sub("^v";"") == "'"$VER"'")
+|
+{
+ (.tag_name | sub("^v";"")):
+ {
+  date:      (.created_at | sub("T.*";"")),
+  src:       (.body | [scan("\\(http[^)]*\\)")][0] | gsub("^\\(|\\)$";"")),
+  relnotes:  (.html_url | sub("github";"raw.githubusercontent")
+                        | sub("releases/tag/";"") | sub("$";"/NEWS")),
+  changelog: (.html_url | sub("releases/tag";"commits"))
+ }
+}
+'
+
+printf "%s" "$CONTENT" | jq -M "$JQ_FILTER"
