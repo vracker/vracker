@@ -35,7 +35,7 @@ FILE_PLUS_DATE="$(\
 			"^$(echo "$FILES_PLUS_DATES" \
 				| sed 's,\.tar.*,,' | sort -ruV | sed 1q \
 			).tar" \
-		| sort -r | sed 1q
+		| sort -r | sed 1q \
 )"
 
 FILE="${FILE_PLUS_DATE%%:*}"

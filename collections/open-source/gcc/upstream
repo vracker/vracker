@@ -14,7 +14,7 @@ CONTENT="$(vracker-download "$URL")"
 VER="$(\
 	echo "$CONTENT" \
 		| sed '/.*<a href="'"$NAME"'-/!d;s,,,;/\/">.*/!d;s,,,;' \
-		| sort -rV | sed 1q
+		| sort -rV | sed 1q \
 )"
 URL="$URL$NAME-$VER/"
 CONTENT="$(vracker-download "$URL")"
@@ -28,7 +28,7 @@ FILE_PLUS_DATE="$(\
 		  -e  '/\.sig/d' \
 		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
 		  -e  's, *</td>.*,,' \
-		| sort -rV | sed 1q
+		| sort -rV | sed 1q \
 )"
 
 FILE="${FILE_PLUS_DATE%%:*}"
