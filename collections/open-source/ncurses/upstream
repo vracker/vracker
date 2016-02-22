@@ -1,0 +1,50 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## ncurses
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=ncurses
+URL="http://ftp.gnu.org/gnu/$NAME/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+FILES_PLUS_DATES="$(\
+	echo "$CONTENT" \
+		| sed \
+		  -e  '/<a href="'"$NAME"'-[0-9]/!d' \
+		  -e  '/\.sig/d' \
+		  -e  's,^.*<td><a href=",,' \
+		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
+		  -e  's, *</td>.*,,' \
+)"
+
+FILE_PLUS_DATE="$(\
+	echo "$FILES_PLUS_DATES" \
+		| grep \
+			"^$(echo "$FILES_PLUS_DATES" \
+				| sed 's,\.tar.*,,' | sort -ruV | sed 1q \
+			).tar" \
+		| sort -r | sed 1q \
+)"
+
+FILE="${FILE_PLUS_DATE%%:*}"
+SIGN="$FILE.sig"
+DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+VER="${FILE#$NAME-}"
+VER="${VER%%.tar*}"
+TAG="t$(echo "$DATE" | sed 's,-,,g')"
+
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"src_sign\": \"$URL$SIGN\","
+echo "    \"relnotes\": \"http://www.gnu.org/software/$NAME/#h2-release-notes\","
+echo "    \"changelog\": \"http://invisible-island.net/$NAME/NEWS.html#$TAG\""
+echo "  }"
+echo "}"
