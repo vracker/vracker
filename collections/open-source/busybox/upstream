@@ -1,0 +1,52 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## BusyBox
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=busybox
+NAME_CC=BusyBox
+URL="https://busybox.net/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+VERSIONS="$(\
+	echo "$CONTENT" \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -c 'li > b' -s '\n' \
+		| grep -i "$NAME" \
+		| sed 1q \
+)"
+CNT=$(echo "$VERSIONS" | wc -l)
+I=0
+
+BASEURL="${URL}downloads/"
+CGITURL="https://git.busybox.net/$NAME/"
+echo "{"
+echo "$VERSIONS" | while read -r LINE; do
+	I=$((I+1))
+	DATE="$(date -d "${LINE%% -- *}" +%F)"
+	VER="${LINE##* -- $NAME_CC }"
+	STABLE="${VER##* (}"
+	STABLE="${STABLE%%)*}"
+	[ "$STABLE" = "stable" ] && STABLE="true" || STABLE="false"
+	VER="${VER%% (*}"
+	FILE="$NAME-$VER.tar.bz2"
+	SIGN="$FILE.sign"
+	TAG="$(echo $VER | sed 's,\.,_,g')"
+	echo "  \"$VER\": {"
+	echo "    \"date\": \"$DATE\","
+	echo "    \"src\": \"$BASEURL$FILE\","
+	echo "    \"src_sign\": \"$BASEURL$SIGN\","
+	echo "    \"relnotes\": \"$URL\","
+	echo "    \"changelog\": \"${CGITURL}log/?h=$TAG\","
+	echo "    \"stable\": $STABLE"
+	printf "  }"
+	[ $I -lt $CNT ] && printf ","
+	echo
+done
+echo "}"
