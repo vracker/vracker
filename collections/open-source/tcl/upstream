@@ -11,7 +11,6 @@
 NAME=tcl
 URL="https://www.tcl.tk/software/tcltk/download.html"
 CONTENT="$(vracker-download "$URL")"
-[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
 
 FILES="$(\
 	echo "$CONTENT" \
@@ -25,7 +24,8 @@ I=0
 echo "{"
 echo "$FILES" | while read -r FILE; do
 	I=$((I+1))
-	DATE="$(curl -IL "$FILE" | sed '/^Last-Modified: /!d;s,,,')"
+	DATE="$(vracker-download --head "$FILE" | sed '/^Last-Modified: /!d;s,,,')"
+	[ -n "$VRACKER_DOWNLOAD_ONLY" ] && continue
 	DATE="$(date -d "$DATE" +%F)"
 	VER="${FILE##*$NAME}"
 	VER="${VER%%-src*}"
