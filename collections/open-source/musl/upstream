@@ -19,11 +19,14 @@ VERSIONS="$(\
 		| hxselect -c p -s '\n' \
 		| grep '^<a href' \
 )"
+CNT=$(echo "$VERSIONS" | wc -l)
+I=0
 
 BASEURL="http://www.musl-libc.org/"
 CGITURL="http://git.musl-libc.org/cgit/$NAME/"
 echo "{"
 echo "$VERSIONS" | while read -r LINE; do
+	I=$((I+1))
 	FILE="$(echo "$LINE" | sed 's,^[^"]*",,;s,".*,,')"
 	SIGN="$(echo "$LINE" | sed 's,^[^"]*"[^"]*"[^"]*",,;s,".*,,')"
 	DATE="$(date -d "${LINE##* - }" +%F)"
@@ -36,8 +39,8 @@ echo "$VERSIONS" | while read -r LINE; do
 	echo "    \"src_sign\": \"$BASEURL$SIGN\","
 	echo "    \"relnotes\": \"${CGITURL}plain/WHATSNEW?h=$TAG\","
 	echo "    \"changelog\": \"${CGITURL}log/?h=$TAG\""
-	echo "  }"
-	# FIXME: add comma if it is non-last entry
-	break
+	printf "  }"
+	[ $I -lt $CNT ] && printf ","
+	echo
 done
 echo "}"
