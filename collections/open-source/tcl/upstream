@@ -18,7 +18,7 @@ FILES="$(\
 		| hxselect 'a[href$=".tar.gz"]' -s '\n' \
 		| sed 's,^[^"]*",,;s,".*$,,;/tcl[0-9]/!d' \
 )"
-FILESCNT=$(echo "$FILES" | wc -l)
+CNT=$(echo "$FILES" | wc -l)
 I=0
 
 echo "{"
@@ -35,7 +35,7 @@ echo "$FILES" | while read -r FILE; do
 	echo "    \"src\": \"$FILE\","
 	echo "    \"changelog\": \"http://core.tcl.tk/tcl/artifact?filename=changes&ci=$TAG\""
 	printf "  }"
-	[ $I -lt $FILESCNT ] && printf ","
+	[ $I -lt $CNT ] && printf ","
 	echo
 done
 echo "}"
