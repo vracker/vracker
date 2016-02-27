@@ -53,13 +53,15 @@ TAG="${2:-v\$VER}"
 
 eval "TAG=\"$TAG\""
 
+NEWSFILE="${NEWSFILE:-NEWS}"
+
 CGITURL="http://git.savannah.gnu.org/cgit/$NAME.git/"
 echo "{"
 echo "  \"$VER\": {"
 echo "    \"date\": \"$DATE\","
 echo "    \"src\": \"$URL$FILE\","
 echo "    \"src_sign\": \"$URL$SIGN\","
-echo "    \"relnotes\": \"${CGITURL}plain/NEWS?id=$TAG\","
+echo "    \"relnotes\": \"${CGITURL}plain/$NEWSFILE?id=$TAG\","
 echo "    \"changelog\": \"${CGITURL}log/?id=$TAG\""
 echo "  }"
 echo "}"
