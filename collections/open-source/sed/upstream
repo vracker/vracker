@@ -1,0 +1,11 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## GNU sed
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+exec vracker-template-gnu sed
