@@ -1,0 +1,32 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## bzip2
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=bzip2
+URL="http://www.bzip.org/"
+CONTENT="$(vracker-download "$URL")"
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+VER_PLUS_DATE="$(\
+	echo "$CONTENT" \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -c 'p' -s '\n' \
+		| sed '/^The current version is <b>/!d;s,,,;s,</b>[^0-9]*,: ,;s,\.$,,' \
+)"
+VER="${VER_PLUS_DATE%%:*}"
+DATE="$(date -d "${VER_PLUS_DATE#*: }" +%F)"
+FILE="$VER/$NAME-$VER.tar.gz"
+
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"relnotes\": \"$URL\""
+echo "  }"
+echo "}"
