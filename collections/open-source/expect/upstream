@@ -18,7 +18,7 @@ VER="$(\
 		| sed '/<script[^>]*>/,/<\/script>/d' \
 		| hxnormalize -xi0 -l9999 \
 		| hxselect -c 'a[class="name"][href^="'"$URLPATH"'"]' -s '\n' \
-		| sed 's,^ *,,' \
+		| sed 's,^ *,,;s, *$,,' \
 		| sort -rV | sed 1q \
 )"
 URL="$URL$VER/"
@@ -30,7 +30,7 @@ FILE_PLUS_DATE="$(\
 		| sed '/<script[^>]*>/,/<\/script>/d' \
 		| hxnormalize -xi0 -l9999 \
 		| hxselect 'tr[title^="'$NAME'"]' -s '\n' \
-		| sed '/headers="files_\(name\|date\)_h"/!d;s,<[^>]*> *<[^>]*> *,,;s,<.*,,' \
+		| sed '/headers="files_\(name\|date\)_h"/!d;s,<[^>]*> *<[^>]*> *,,;s, *<.*,,' \
 		| sed 'N;s,\n,: ,' \
 		| sort -r | sed 1q \
 )"
