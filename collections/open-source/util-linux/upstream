@@ -11,10 +11,11 @@
 NAME=util-linux
 URL="https://www.kernel.org/pub/linux/utils/$NAME/"
 CONTENT="$(vracker-download "$URL")"
+RIDX=${1:-1}
 MVER="$(\
 	echo "$CONTENT" \
 		| sed '/^<a href="v/!d;s,,,;s,/".*,,' \
-		| sort -rV | sed 1q
+		| sort -rV | sed "$RIDX"'!d;q'
 )"
 URL="${URL}v$MVER/"
 CONTENT="$(vracker-download "$URL")"
@@ -28,6 +29,11 @@ FILES_PLUS_DATES="$(\
 		  -e  '/\.sign/d' \
 		  -e  's,^<a href[^>]*>,,;s,</a> *,: ,;s,   *[^ ]* *$,,' \
 )"
+
+if [ -z "$FILES_PLUS_DATES" ]; then
+	exec "$0" $((RIDX + 1))
+	exit
+fi
 
 FILE_PLUS_DATE="$(\
 	echo "$FILES_PLUS_DATES" \
