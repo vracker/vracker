@@ -11,7 +11,11 @@
 NAME=expect
 NAME_U="$(echo "$NAME" | sed 's,.,\u&,')"
 URL="https://sourceforge.net/projects/$NAME/files/$NAME_U/"
-CONTENT="$(vracker-download "$URL")"
+CONTENT="$(\
+	vracker-download \
+		--xform '/<!-- Server: .* -->/d;/>Advertise</{N;d;};/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;};' \
+		"$URL" \
+)"
 URLPATH="$(echo "$URL" | sed 's,^[^:]*://[^/]*,,')"
 VER="$(\
 	echo "$CONTENT" \
@@ -22,7 +26,11 @@ VER="$(\
 		| sort -rV | sed 1q \
 )"
 URL="$URL$VER/"
-CONTENT="$(vracker-download "$URL")"
+CONTENT="$(\
+	vracker-download \
+		--xform '/<!-- Server: .* -->/d;/>Advertise</{N;d;};/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;};' \
+		"$URL" \
+)"
 [ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
 
 FILE_PLUS_DATE="$(\
