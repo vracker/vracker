@@ -16,7 +16,7 @@ VRACKER_USERAGENT="${VRACKER_USERAGENT:-vracker/1.0}"
 [ -d "$VRACKER_CACHEDIR/head" ] || mkdir -p "$VRACKER_CACHEDIR/head"
 
 if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
-	echo "Usage: $0 [--head] URL..."
+	echo "Usage: $0 [--head] [--xform EXPRESSION] URL..."
 	echo
 	echo "Print the content served at URL."
 	echo \
@@ -39,6 +39,12 @@ if [ "$1" = "--head" ]; then
 	shift
 fi
 
+XFORM=
+if [ "$1" = "--xform" ]; then
+	XFORM="$2"
+	shift 2
+fi
+
 [ "$1" = "--" ] && shift
 
 while [ $# -gt 0 ]; do
@@ -55,6 +61,7 @@ while [ $# -gt 0 ]; do
 				-o "$VRACKER_CACHEDIR/$FILE" \
 				$CURL_OPTIONS \
 				"$URL"
+			[ -n "$XFORM" ] && sed -i "$XFORM" "$VRACKER_CACHEDIR/$FILE"
 		fi
 	fi
 	cat "$VRACKER_CACHEDIR/$FILE"
