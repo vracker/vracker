@@ -8,4 +8,4 @@
 ## This script is licensed under the terms of the MIT license.
 ## https://opensource.org/licenses/MIT
 
-exec vracker-template-gnu libtasn1 '${NAME}_$VER'
+exec vracker-template-gnu libtasn1 '${NAME}_$(echo "$VER" | sed "s,\\.,_,g")'
