@@ -45,10 +45,13 @@ if [ -n "$VRACKER_DOWNLOAD_ONLY" ]; then
 fi
 
 ( cd "$VRACKER_DATADIR" && git reset -q --hard )
+VERSIONS_OLD="$(jq -M -r 'keys_unsorted|.[]' "$VRACKER_DATADIR/$JSONPATH" 2>/dev/null | sort -rV | tr '\n' ' ')"
 mkdir -p "$VRACKER_DATADIR/${JSONPATH%/*}"
 "$SCRIPT" >"$VRACKER_DATADIR/$JSONPATH"
+VERSIONS="$(jq -M -r 'keys_unsorted|.[]' "$VRACKER_DATADIR/$JSONPATH" | sort -rV | tr '\n' ' ')"
+
+[ "$VERSIONS" = "$VERSIONS_OLD" ] && NOTE=" (fix)" || NOTE=
 
 cd "$VRACKER_DATADIR"
-VERSIONS="$(jq -M -r 'keys_unsorted|.[]' "$JSONPATH" | sort -rV | tr '\n' ' ')"
 git add -- "$JSONPATH"
-git commit -m "[$ORIGIN] $PROJNAME: $VERSIONS"
+git commit -m "[$ORIGIN] $PROJNAME: $VERSIONS$NOTE"
