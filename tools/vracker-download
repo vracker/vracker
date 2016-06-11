@@ -16,7 +16,7 @@ VRACKER_USERAGENT="${VRACKER_USERAGENT:-vracker/1.0}"
 [ -d "$VRACKER_CACHEDIR/head" ] || mkdir -p "$VRACKER_CACHEDIR/head"
 
 if [ $# -eq 0 -o "$1" = "-h" -o "$1" = "--help" ]; then
-	echo "Usage: $0 [--head] [--xform EXPRESSION] URL..."
+	echo "Usage: $0 [--head] [--xform EXPRESSION]... URL..."
 	echo
 	echo "Print the content served at URL."
 	echo \
@@ -40,10 +40,10 @@ if [ "$1" = "--head" ]; then
 fi
 
 XFORM=
-if [ "$1" = "--xform" ]; then
-	XFORM="$2"
+while [ "$1" = "--xform" ]; do
+	XFORM="$XFORM;$2"
 	shift 2
-fi
+done
 
 [ "$1" = "--" ] && shift
 
