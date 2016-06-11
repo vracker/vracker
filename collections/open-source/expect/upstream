@@ -17,6 +17,7 @@ CONTENT="$(\
 		--xform '/>Advertise</{N;d;}' \
 		--xform '/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;}' \
 		--xform '/SF\.deploy_time/d' \
+		--xform '/<style.*\/style>/d' \
 		--xform 's/?[0-9]*"/"/' \
 		"$URL" \
 )"
@@ -36,6 +37,7 @@ CONTENT="$(\
 		--xform '/>Advertise</{N;d;}' \
 		--xform '/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;}' \
 		--xform '/SF\.deploy_time/d' \
+		--xform '/<style.*\/style>/d' \
 		--xform 's/?[0-9]*"/"/' \
 		"$URL" \
 )"
