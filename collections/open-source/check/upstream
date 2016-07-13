@@ -27,7 +27,7 @@ JQ_FILTER='
  (.tag_name | sub("^v";"")):
  {
   date:      (.created_at | sub("T.*";"")),
-  src:       (.body | [scan("\\(http[^)]*\\)")][0] | gsub("^\\(|\\)$";"")),
+  src:       (.assets[] | select(.name | endswith(".tar.gz")) | .browser_download_url),
   relnotes:  (.html_url | sub("github";"raw.githubusercontent")
                         | sub("releases/tag/";"") | sub("$";"/NEWS")),
   changelog: (.html_url | sub("releases/tag";"commits"))
