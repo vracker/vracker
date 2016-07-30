@@ -10,7 +10,11 @@
 
 NAME=check
 URL="https://api.github.com/repos/libcheck/$NAME/releases"
-CONTENT="$(vracker-download "$URL")"
+CONTENT="$(\
+	vracker-download \
+		--xform 's/"download_count":[0-9]\+,//' \
+		"$URL" \
+)"
 [ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
 
 VER="$(\
