@@ -1,0 +1,48 @@
+#!/bin/sh
+
+## vracker's collections: open-source
+## pkg-config
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+NAME=pkg-config
+URL="https://www.freedesktop.org/wiki/Software/$NAME/"
+CONTENT="$(vracker-download "$URL")"
+
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] || \
+MAILURL_VER="$(\
+	echo "$CONTENT" \
+		| sed -n "/The current release of $NAME is version/"'{n;s,.*<a href=",,;s,">,|,;s,</a>.*,,;p;q;}'
+)"
+
+URL="https://$NAME.freedesktop.org/releases/"
+CONTENT="$(vracker-download "$URL")"
+
+[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+
+MAILURL="${MAILURL_VER%%|*}"
+VER="${MAILURL_VER##*|}"
+
+FILE="$NAME-$VER.tar.gz"
+SIGN="$FILE.asc"
+DATE="$(\
+	echo "$CONTENT" \
+		| sed \
+		  -e  '/<a href="'"$FILE"'"/!d' \
+		  -e  's,.*">[^<]*</a></td><td[^>]*>,,' \
+		  -e  's, *</td>.*,,' \
+)"
+DATE="$(date -d "$DATE" +%F)"
+
+echo "{"
+echo "  \"$VER\": {"
+echo "    \"date\": \"$DATE\","
+echo "    \"src\": \"$URL$FILE\","
+echo "    \"src_sign\": \"$URL$SIGN\","
+echo "    \"relnotes\": \"$MAILURL\","
+echo "    \"changelog\": \"$MAILURL\""
+echo "  }"
+echo "}"
