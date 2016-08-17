@@ -14,6 +14,7 @@ URL="https://sourceforge.net/projects/$NAME/files/$NAME_U/"
 CONTENT="$(\
 	vracker-download \
 		--xform '/<!-- Server: .* -->/d' \
+		--xform '/<meta charset[^>]*>/d' \
 		--xform '/<style.*\/style>/d' \
 		--xform '/<style[^>]*>/,/<\/style>/d' \
 		--xform '/<script.*\/script>/d' \
@@ -42,6 +43,7 @@ URL="$URL$VER/"
 CONTENT="$(\
 	vracker-download \
 		--xform '/<!-- Server: .* -->/d' \
+		--xform '/<meta charset[^>]*>/d' \
 		--xform '/<style.*\/style>/d' \
 		--xform '/<style[^>]*>/,/<\/style>/d' \
 		--xform '/<script.*\/script>/d' \
