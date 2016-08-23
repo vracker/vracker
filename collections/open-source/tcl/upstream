@@ -15,7 +15,7 @@ CONTENT="$(vracker-download "$URL")"
 FILES="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect 'a[href$=".tar.gz"]' -s '\n' \
+		| hxselect -s '\n' 'a[href$=".tar.gz"]' \
 		| sed 's,^[^"]*",,;s,".*$,,;/tcl[0-9]/!d' \
 )"
 CNT=$(echo "$FILES" | wc -l)

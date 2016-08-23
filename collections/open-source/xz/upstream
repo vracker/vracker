@@ -16,7 +16,7 @@ CONTENT="$(vracker-download "$URL")"
 VER_PLUS_DATE="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect -c 'h3+p' -s '\n' \
+		| hxselect -c -s '\n' 'h3+p' \
 		| sed 's,^ *,,;s, [^0-9]* ,: ,;s,[^0-9]*$,,;q' \
 )"
 VER="${VER_PLUS_DATE%%:*}"

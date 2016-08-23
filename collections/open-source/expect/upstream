@@ -35,7 +35,7 @@ URLPATH="$(echo "$URL" | sed 's,^[^:]*://[^/]*,,')"
 VER="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect -c 'a[class="name"][href^="'"$URLPATH"'"]' -s '\n' \
+		| hxselect -c -s '\n' 'a[class="name"][href^="'"$URLPATH"'"]' \
 		| sed 's,^ *,,;s, *$,,' \
 		| sort -rV | sed 1q \
 )"
@@ -65,7 +65,7 @@ CONTENT="$(\
 FILE_PLUS_DATE="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect 'tr[title^="'$NAME'"]' -s '\n' \
+		| hxselect -s '\n' 'tr[title^="'$NAME'"]' \
 		| sed '/headers="files_\(name\|date\)_h"/!d;s,<[^>]*> *<[^>]*> *,,;s, *<.*,,' \
 		| sed 'N;s,\n,: ,' \
 		| sort -r | sed 1q \

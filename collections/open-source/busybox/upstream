@@ -17,7 +17,7 @@ CONTENT="$(vracker-download "$URL")"
 VERSIONS="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect -c 'li > b' -s '\n' \
+		| hxselect -c -s '\n' 'li > b' \
 		| grep -i "$NAME" \
 		| sed 1q \
 )"

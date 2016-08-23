@@ -16,7 +16,7 @@ CONTENT="$(vracker-download "$URL")"
 VERSIONS="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 -l9999 \
-		| hxselect -c p -s '\n' \
+		| hxselect -c -s '\n' p \
 		| grep '^<a href' \
 )"
 CNT=$(echo "$VERSIONS" | wc -l)

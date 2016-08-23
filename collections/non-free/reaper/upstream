@@ -16,13 +16,13 @@ CONTENT="$(vracker-download "$URL")"
 VER_PLUS_DATE="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 \
-		| hxselect -c 'div.hdrbottom' -s '\n' \
+		| hxselect -c -s '\n' 'div.hdrbottom' \
 		| sed '/^Version /!d;s,,,;q' \
 )"
 BINARIES="$(\
 	echo "$CONTENT" \
 		| hxnormalize -xi0 \
-		| hxselect 'a[href^=files]' -s '\n' \
+		| hxselect -s '\n' 'a[href^=files]' \
 		| sed 's,^[^"]*",,;s,".*,,' \
 )"
 VER="${VER_PLUS_DATE%%:*}"
