@@ -58,13 +58,13 @@ while [ $# -gt 0 ]; do
 		echo "Updating cache..."
 		( cd "$VRACKER_CACHEDIR" && git clean -q -fdx )
 		export VRACKER_DOWNLOAD_ONLY=1
-		find * -type f -executable -print -exec vracker-update-script {} \;
+		find * -type f -perm -100 -print -exec vracker-update-script {} \;
 		unset VRACKER_DOWNLOAD_ONLY
 		( cd "$VRACKER_CACHEDIR" && git add . && git commit -m "Update." )
 		echo
 		echo "Updating archive..."
 		export VRACKER_OFFLINE=1
-		find * -type f -executable -print -exec vracker-update-script {} \;
+		find * -type f -perm -100 -print -exec vracker-update-script {} \;
 		unset VRACKER_OFFLINE
 	)
 done
