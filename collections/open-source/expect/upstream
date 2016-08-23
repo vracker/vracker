@@ -29,6 +29,7 @@ CONTENT="$(\
 		--xform '/<textarea/d' \
 		--xform '/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;}' \
 		--xform 's/?[0-9]*"/"/' \
+		--xform '/^[ \t]*$/d' \
 		"$URL" \
 )"
 URLPATH="$(echo "$URL" | sed 's,^[^:]*://[^/]*,,')"
@@ -58,6 +59,7 @@ CONTENT="$(\
 		--xform '/<textarea/d' \
 		--xform '/<td headers="files_downloads_h" class="opt">/{/<\/td>/!N;d;}' \
 		--xform 's/?[0-9]*"/"/' \
+		--xform '/^[ \t]*$/d' \
 		"$URL" \
 )"
 [ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
