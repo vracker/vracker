@@ -59,11 +59,17 @@ Requirements
 ------------
 
 - POSIX shell, e.g. [bash] [1].
-- [jq] [2]             -- JSON processor.
-- [html-xml-utils] [3] -- utilities for manipulating HTML and XML files.
-- [xmlstarlet] [4]     -- utilities for working with XML files.
+- POSIX bc, e.g. [GNU bc] [2] -- arbitrary precision calculator.
+- [curl] [3]                  -- tool to transfer data from or to a server.
+- [html-xml-utils] [4]        -- utilities for manipulating HTML and XML files.
+- [jq] [5]                    -- JSON processor (compiled w/ Oniguruma libary).
+- [GNU sed] [6]               -- GNU stream editor.
+- [xmlstarlet] [7]            -- utilities for working with XML files.
 
   [1]: https://www.gnu.org/software/bash/
-  [2]: https://stedolan.github.io/jq/
-  [3]: http://www.w3.org/Tools/HTML-XML-utils/
-  [4]: http://xmlstar.sourceforge.net/
+  [2]: https://www.gnu.org/software/bc/
+  [3]: https://curl.haxx.se/
+  [4]: https://www.w3.org/Tools/HTML-XML-utils/
+  [5]: https://stedolan.github.io/jq/
+  [6]: https://www.gnu.org/software/sed/
+  [7]: http://xmlstar.sourceforge.net/
