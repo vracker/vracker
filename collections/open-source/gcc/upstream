@@ -9,41 +9,72 @@
 ## https://opensource.org/licenses/MIT
 
 NAME=gcc
-URL="http://ftp.gnu.org/gnu/$NAME/"
-CONTENT="$(vracker-download "$URL")"
-VER="$(\
+HOMEURL="https://$NAME.gnu.org/"
+CONTENT="$(vracker-download "$HOMEURL")"
+RELEASES="$(
 	echo "$CONTENT" \
-		| sed '/.*<a href="'"$NAME"'-/!d;s,,,;/\/">.*/!d;s,,,;' \
-		| vracker-vsort -r | sed 1q \
+		| hxnormalize -xi0 -l9999 \
+		| hxselect -s '\n' 'span.version a' \
+		| sed 's,^<a href=",,;s,/".*,,' \
+		| vracker-vsort -r \
 )"
-URL="$URL$NAME-$VER/"
-CONTENT="$(vracker-download "$URL")"
-[ -n "$VRACKER_DOWNLOAD_ONLY" ] && exit
+CNT=$(echo "$RELEASES" | wc -l)
+I=0
 
-FILE_PLUS_DATE="$(\
+FTPURL="http://ftp.gnu.org/gnu/$NAME/"
+CONTENT="$(vracker-download "$FTPURL")"
+
+DIRS="$(\
 	echo "$CONTENT" \
-		| sed \
-		  -e  '/.*<a href="/!d;s,,,' \
-		  -e  '/^'"$NAME"'-'"$VER"'/!d' \
-		  -e  '/\.sig/d' \
-		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
-		  -e  's, *</td>.*,,' \
-		| vracker-vsort -r | sed 1q \
+		| sed '/.*<a href="/!d;s,,,;/\/">.*/!d;s,,,;/'"$NAME"'-[0-9]/!d;' \
+		| vracker-vsort -r \
 )"
 
-FILE="${FILE_PLUS_DATE%%:*}"
-SIGN="$FILE.sig"
-DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
-VER="${FILE#$NAME-}"
-VER="${VER%%.tar*}"
-MVER="${VER%%.*}"
-AVER="${VER%.0}"
+if [ -z "$RELEASES" ]; then
+	RELEASES="$(\
+		echo "$DIRS" \
+			| sed 's,\..*,,;1q' \
+	)"
+fi
+
+if [ -n "$VRACKER_DOWNLOAD_ONLY" ]; then
+	echo "$RELEASES" | while read -r LINE; do
+		DIR="$(echo "$DIRS" | grep "^$LINE" | sed 1q)"
+		URL="$FTPURL$DIR/"
+		CONTENT="$(vracker-download "$URL")"
+	done
+	exit
+fi
 
 echo "{"
-echo "  \"$VER\": {"
-echo "    \"date\": \"$DATE\","
-echo "    \"src\": \"$URL$FILE\","
-echo "    \"src_sign\": \"$URL$SIGN\","
-echo "    \"relnotes\": \"https://gcc.gnu.org/gcc-$MVER/changes.html#$AVER\""
-echo "  }"
+echo "$RELEASES" | while read -r LINE; do
+	I=$((I+1))
+	DIR="$(echo "$DIRS" | grep "^$LINE" | sed 1q)"
+	URL="$FTPURL$DIR/"
+	CONTENT="$(vracker-download "$URL")"
+	FILE_PLUS_DATE="$(\
+		echo "$CONTENT" \
+			| sed \
+			  -e  '/.*<a href="/!d;s,,,' \
+			  -e  '/^'"$DIR"'/!d' \
+			  -e  '/\.sig/d' \
+			  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
+			  -e  's, *</td>.*,,' \
+			| vracker-vsort -r | sed 1q \
+	)"
+	FILE="${FILE_PLUS_DATE%%:*}"
+	SIGN="$FILE.sig"
+	DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+	VER="${FILE#$NAME-}"
+	VER="${VER%%.tar*}"
+	AVER="${VER%.[0-9]}"
+	echo "  \"$VER\": {"
+	echo "    \"date\": \"$DATE\","
+	echo "    \"src\": \"$URL$FILE\","
+	echo "    \"src_sign\": \"$URL$SIGN\","
+	echo "    \"relnotes\": \"${HOMEURL}${LINE}/changes.html#$AVER\""
+	printf "  }"
+	[ $I -lt $CNT ] && printf ","
+	echo
+done
 echo "}"
