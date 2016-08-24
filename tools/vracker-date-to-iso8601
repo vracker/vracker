@@ -1,0 +1,54 @@
+#!/bin/sh
+
+## vracker's tools
+## date to iso8601 format conversion
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+DAYS="\
+Moday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+"
+
+MONTHS="\
+January
+February
+March
+April
+May
+June
+July
+August
+September
+October
+November
+December
+"
+
+set -- $(echo "$@" | sed 's/[,-]/ /g')
+
+DOW=$(echo "$DAYS" | grep -n "$1" | sed 's,:.*,,')
+
+[ -z "$DOW" ] || shift
+
+if [ "${1%[0-9]}" = "$1" ]; then
+	M=$1
+	D=$2
+else
+	D=$1
+	M=$2
+fi
+
+Y=$3
+M=$(echo "$MONTHS" | grep -n "$M" | sed 's,:.*,,')
+D=$(echo "$D" | sed 's,[^0-9].*,,')
+
+printf "%04d-%02d-%02d\n" $Y $M $D
