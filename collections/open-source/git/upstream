@@ -32,7 +32,7 @@ FILE_PLUS_DATE="$(\
 
 FILE="${FILE_PLUS_DATE%%:*}"
 SIGN="${FILE%%.tar*}.tar.sign"
-DATE="$(date -d "${FILE_PLUS_DATE#*: }" +%F)"
+DATE="$(vracker-date-to-iso8601 "${FILE_PLUS_DATE#*: }")"
 VER="${FILE#$NAME-}"
 VER="${VER%%.tar*}"
 TAG="v$VER"

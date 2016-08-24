@@ -28,7 +28,7 @@ echo "$FILES" | while read -r FILE; do
 		vracker-download --head --xform '/^\(Date\|ETag\|Connection\|Content-Length\|Content-Type\|Location\|Server\|Set-Cookie\): /d;' "$FILE" \
 		| sed '/^Last-Modified: /!d;s,,,')"
 	[ -n "$VRACKER_DOWNLOAD_ONLY" ] && continue
-	DATE="$(date -d "$DATE" +%F)"
+	DATE="$(vracker-date-to-iso8601 "$DATE")"
 	VER="${FILE##*$NAME}"
 	VER="${VER%%-src*}"
 	TAG="$(echo "$VER" | sed 's,\.,-,g;s,^,core-,')"

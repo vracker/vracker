@@ -29,7 +29,7 @@ CGITURL="https://git.busybox.net/$NAME/"
 echo "{"
 echo "$VERSIONS" | while read -r LINE; do
 	I=$((I+1))
-	DATE="$(date -d "${LINE%% -- *}" +%F)"
+	DATE="$(vracker-date-to-iso8601 "${LINE%% -- *}")"
 	VER="${LINE##* -- $NAME_CC }"
 	STABLE="${VER##* (}"
 	STABLE="${STABLE%%)*}"

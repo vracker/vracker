@@ -29,7 +29,7 @@ echo "$VERSIONS" | while read -r LINE; do
 	I=$((I+1))
 	FILE="$(echo "$LINE" | sed 's,^[^"]*",,;s,".*,,')"
 	SIGN="$(echo "$LINE" | sed 's,^[^"]*"[^"]*"[^"]*",,;s,".*,,')"
-	DATE="$(date -d "${LINE##* - }" +%F)"
+	DATE="$(vracker-date-to-iso8601 "${LINE##* - }")"
 	VER="${FILE##*$NAME-}"
 	VER="${VER%%.tar*}"
 	TAG="v$VER"

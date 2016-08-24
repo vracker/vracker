@@ -26,7 +26,7 @@ BINARIES="$(\
 		| sed 's,^[^"]*",,;s,".*,,' \
 )"
 VER="${VER_PLUS_DATE%%:*}"
-DATE="$(date -d "${VER_PLUS_DATE#*: }" +%F)"
+DATE="$(vracker-date-to-iso8601 "${VER_PLUS_DATE#*: }")"
 
 BASEURL="http://reaper.fm/"
 echo "{"

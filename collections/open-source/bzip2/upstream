@@ -20,7 +20,7 @@ VER_PLUS_DATE="$(\
 		| sed '/^The current version is <b>/!d;s,,,;s,</b>[^0-9]*,: ,;s,\.$,,' \
 )"
 VER="${VER_PLUS_DATE%%:*}"
-DATE="$(date -d "${VER_PLUS_DATE#*: }" +%F)"
+DATE="$(vracker-date-to-iso8601 "${VER_PLUS_DATE#*: }")"
 FILE="$VER/$NAME-$VER.tar.gz"
 
 echo "{"
