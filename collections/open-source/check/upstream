@@ -20,7 +20,7 @@ CONTENT="$(\
 VER="$(\
 	printf "%s" "$CONTENT" \
 		| jq -rM '.[].tag_name | sub("^v";"")' \
-		| sort -rV | sed 1q \
+		| vracker-vsort -r | sed 1q \
 )"
 
 JQ_FILTER='

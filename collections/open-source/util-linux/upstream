@@ -15,7 +15,7 @@ RIDX=${1:-1}
 MVER="$(\
 	echo "$CONTENT" \
 		| sed '/^<a href="v/!d;s,,,;s,/".*,,' \
-		| sort -rV | sed "$RIDX"'!d;q'
+		| vracker-vsort -r | sed "$RIDX"'!d;q'
 )"
 URL="${URL}v$MVER/"
 CONTENT="$(vracker-download "$URL")"
@@ -39,7 +39,7 @@ FILE_PLUS_DATE="$(\
 	echo "$FILES_PLUS_DATES" \
 		| grep \
 			"^$(echo "$FILES_PLUS_DATES" \
-				| sed 's,\.tar.*,,' | sort -ruV | sed 1q \
+				| sed 's,\.tar.*,,' | vracker-vsort -ru | sed 1q \
 			).tar" \
 		| sort -r | sed 1q \
 )"

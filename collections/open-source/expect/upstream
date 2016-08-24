@@ -38,7 +38,7 @@ VER="$(\
 		| hxnormalize -xi0 -l9999 \
 		| hxselect -c -s '\n' 'a[class="name"][href^="'"$URLPATH"'"]' \
 		| sed 's,^ *,,;s, *$,,' \
-		| sort -rV | sed 1q \
+		| vracker-vsort -r | sed 1q \
 )"
 URL="$URL$VER/"
 CONTENT="$(\
