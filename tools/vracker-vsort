@@ -1,0 +1,13 @@
+#!/bin/sh
+
+## vracker's tools
+## version sort
+##
+## Copyright (C) 2016 Przemyslaw Pawelczyk <przemoc@gmail.com>
+##
+## This script is licensed under the terms of the MIT license.
+## https://opensource.org/licenses/MIT
+
+sed -r 's,^([^0-9]*)([0-9]*[^0-9.])?(.*),\3~!@\1\2,' \
+	| sort -nt . -k 1,1 -k 2,2 -k 3,3 -k 4,4 -k 5,5 -k 6,6 "$@" \
+	| sed -r 's,^(.*)~!@(.*),\2\1,'
