@@ -63,7 +63,7 @@ Requirements
 - [curl] [3]                  -- tool to transfer data from or to a server.
 - [html-xml-utils] [4]        -- utilities for manipulating HTML and XML files.
 - [jq] [5]                    -- JSON processor (compiled w/ Oniguruma libary).
-- [GNU sed] [6]               -- GNU stream editor.
+- POSIX sed, e.g. [GNU sed] [6] -- stream editor.
 - [xmlstarlet] [7]            -- utilities for working with XML files.
 
   [1]: https://www.gnu.org/software/bash/
