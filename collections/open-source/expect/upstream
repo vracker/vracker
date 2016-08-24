@@ -9,7 +9,10 @@
 ## https://opensource.org/licenses/MIT
 
 NAME=expect
-NAME_U="$(echo "$NAME" | sed 's,.,\u&,')"
+NAME_U="\
+$(echo "$NAME" | sed -r 's,^(.).*,\1,' | tr '[:lower:]' '[:upper:]')\
+$(echo "$NAME" | sed -r 's,^.(.*),\1,')\
+"
 URL="https://sourceforge.net/projects/$NAME/files/$NAME_U/"
 CONTENT="$(\
 	vracker-download \
