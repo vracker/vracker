@@ -9,14 +9,14 @@
 ## https://opensource.org/licenses/MIT
 
 NAME=elfutils
-NAMEDIR=$(echo "$NAME" | sed 's,\(.\)\(.\).*,\1/\2,')
-URL="https://fedorahosted.org/releases/$NAMEDIR/$NAME/"
+URL="https://sourceware.org/$NAME/ftp/"
 CONTENT="$(vracker-download "$URL")"
 MVER="$(\
 	echo "$CONTENT" \
 		| sed \
-		  -e  '/^ *<a href="/!d;s,,,' \
-		  -e  '/\/".*/!d;s,,,' \
+		  -e  '/<a href="[0-9]/!d' \
+		  -e  's,^.*<td><a href=",,' \
+		  -e  's,/">.*,,' \
 		| vracker-vsort -r | sed 1q
 )"
 URL="$URL$MVER/"
@@ -26,11 +26,11 @@ CONTENT="$(vracker-download "$URL")"
 FILES_PLUS_DATES="$(\
 	echo "$CONTENT" \
 		| sed \
-		  -e  '/ *<a href="'"$NAME"'-[0-9]/!d' \
+		  -e  '/<a href="'"$NAME"'-[0-9]/!d' \
 		  -e  '/\.sig/d' \
-		  -e  's,^.*<a href=",,' \
-		  -e  's,">[^<]*</a> *,: ,' \
-		  -e  's,  .*,,' \
+		  -e  's,^.*<td><a href=",,' \
+		  -e  's,">[^<]*</a></td><td[^>]*>,: ,' \
+		  -e  's, *</td>.*,,' \
 )"
 
 FILE_PLUS_DATE="$(\
