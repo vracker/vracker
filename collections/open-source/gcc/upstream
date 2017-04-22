@@ -50,6 +50,7 @@ echo "{"
 echo "$RELEASES" | while read -r LINE; do
 	I=$((I+1))
 	DIR="$(echo "$DIRS" | grep "^$LINE" | sed 1q)"
+	[ -n "$DIR" ] || continue
 	URL="$FTPURL$DIR/"
 	CONTENT="$(vracker-download "$URL")"
 	FILE_PLUS_DATE="$(\
