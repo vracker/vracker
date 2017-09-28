@@ -47,7 +47,11 @@ fi
 ( cd "$VRACKER_DATADIR" && git reset -q --hard )
 VERSIONS_OLD="$(jq -M -r 'keys_unsorted|.[]' "$VRACKER_DATADIR/$JSONPATH" 2>/dev/null | vracker-vsort -r | tr '\n' ' ')"
 mkdir -p "$VRACKER_DATADIR/${JSONPATH%/*}"
-"$SCRIPT" >"$VRACKER_DATADIR/$JSONPATH"
+if "$SCRIPT" >"$VRACKER_DATADIR/$JSONPATH.new"; then
+	mv "$VRACKER_DATADIR/$JSONPATH.new" "$VRACKER_DATADIR/$JSONPATH"
+else
+	rm "$VRACKER_DATADIR/$JSONPATH.new"
+fi
 VERSIONS="$(jq -M -r 'keys_unsorted|.[]' "$VRACKER_DATADIR/$JSONPATH" | vracker-vsort -r | tr '\n' ' ')"
 
 [ "$VERSIONS" = "$VERSIONS_OLD" ] && NOTE=" (fix)" || NOTE=
